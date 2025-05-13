@@ -6,6 +6,7 @@ from app import db, login_manager
 # User role constants
 ROLE_CLIENTE = 1
 ROLE_BARBEIRO = 2
+ROLE_ADMIN = 3
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -40,6 +41,9 @@ class User(UserMixin, db.Model):
     
     def is_cliente(self):
         return self.role == ROLE_CLIENTE
+        
+    def is_admin(self):
+        return self.role == ROLE_ADMIN
 
 class PerfilBarbeiro(db.Model):
     __tablename__ = 'perfis_barbeiro'

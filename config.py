@@ -2,9 +2,8 @@ import os
 from urllib.parse import urlparse
 
 class Config:
-    # Configuração do banco de dados SQLite
-    basedir = os.path.abspath(os.path.dirname(__file__))
-    DATABASE_URL = os.environ.get('DATABASE_URL', f'sqlite:///{os.path.join(basedir, "app.db")}')
+    # Configuração do banco de dados PostgreSQL
+    DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://postgres:BRIHfNrYSvhUDVayulkxWVMreiRJgCMJ@trolley.proxy.rlwy.net:57071/railway')
     
     # Configurações de segurança
     SECRET_KEY = os.environ.get('SESSION_SECRET', 'safa-barbeiros-secret-key')

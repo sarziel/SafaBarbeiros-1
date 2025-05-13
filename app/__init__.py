@@ -37,6 +37,7 @@ def create_app(config_class=Config):
     from app.routes.barbeiro import barbeiro_bp
     from app.routes.agendamento import agendamento_bp
     from app.routes.financeiro import financeiro_bp
+    from app.routes.admin import admin_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
@@ -44,6 +45,7 @@ def create_app(config_class=Config):
     app.register_blueprint(barbeiro_bp)
     app.register_blueprint(agendamento_bp)
     app.register_blueprint(financeiro_bp)
+    app.register_blueprint(admin_bp)
 
     # Import models to ensure they're registered with SQLAlchemy
     with app.app_context():
