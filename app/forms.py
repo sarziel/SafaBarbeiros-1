@@ -42,11 +42,6 @@ class RegistroBarbeiroForm(RegistroClienteForm):
     bio = TextAreaField('Sobre mim', validators=[Optional(), Length(max=500)])
     horario_inicio = TimeField('Horário de Início', validators=[DataRequired()], default=time(9, 0))
     horario_fim = TimeField('Horário de Término', validators=[DataRequired()], default=time(18, 0))
-    dias_trabalho = SelectMultipleField('Dias de Trabalho', 
-                                      choices=[(1, 'Segunda'), (2, 'Terça'), (3, 'Quarta'), 
-                                              (4, 'Quinta'), (5, 'Sexta'), (6, 'Sábado'), (7, 'Domingo')],
-                                      coerce=int,
-                                      default=[1, 2, 3, 4, 5])
     
     def validate_horario_inicio(self, horario_inicio):
         if horario_inicio.data >= self.horario_fim.data:
