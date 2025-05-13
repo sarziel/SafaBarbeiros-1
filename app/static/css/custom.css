@@ -29,6 +29,27 @@ body {
     display: flex;
     flex-direction: column;
     background-color: #f5f3ed; /* Fundo levemente bege */
+    color: var(--text-on-light); /* Garantir contraste consistente para o texto */
+}
+
+/* Melhorar contraste do texto em todo o aplicativo */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-on-light);
+    font-weight: 600;
+}
+
+.card {
+    color: var(--text-on-light);
+}
+
+.card-title {
+    font-weight: 600;
+}
+
+/* Melhorar contraste para texto em display */
+.display-4, .display-5, .display-6 {
+    color: var(--text-on-light);
+    font-weight: 600;
 }
 
 .container {
@@ -73,11 +94,22 @@ footer {
 .btn-primary {
     background-color: var(--military-olive);
     border-color: var(--military-olive);
+    color: var(--text-on-dark) !important;
+    font-weight: 500;
 }
 
 .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
     background-color: #4A5C28;
     border-color: #4A5C28;
+    color: var(--text-on-dark) !important;
+}
+
+/* Botões em fundos escuros precisam de melhor contraste */
+.bg-primary .btn-light, .bg-secondary .btn-light, .bg-dark .btn-light {
+    background-color: #f8f9fa;
+    border-color: #f8f9fa;
+    color: var(--text-on-light);
+    font-weight: 500;
 }
 
 .btn-secondary {
@@ -149,6 +181,17 @@ footer {
 .card-header {
     border-top-left-radius: 0.25rem !important;
     border-top-right-radius: 0.25rem !important;
+}
+
+/* Melhor contraste para cabeçalhos de card */
+.card-header.bg-primary {
+    background-color: var(--military-olive) !important;
+    color: var(--text-on-dark) !important;
+    font-weight: 600;
+}
+
+.card-header h4, .card-header h5 {
+    font-weight: 600;
 }
 
 /* Cards com bordas estilo militar */
@@ -232,9 +275,31 @@ footer {
 }
 
 /* Estilizando inputs */
+.form-control, .form-select {
+    color: var(--text-on-light);
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
 .form-control:focus, .form-select:focus {
     border-color: var(--barbeiro-primary);
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    box-shadow: 0 0 0 0.25rem rgba(90, 110, 49, 0.25);
+    color: var(--text-on-light);
+}
+
+.form-label {
+    color: var(--text-on-light);
+    font-weight: 500;
+}
+
+.form-control::placeholder {
+    color: rgba(45, 58, 27, 0.6);
+}
+
+.input-group-text {
+    background-color: rgba(90, 110, 49, 0.1);
+    color: var(--text-on-light);
+    border-color: rgba(0, 0, 0, 0.2);
+    font-weight: 500;
 }
 
 /* Estilos para a página de agenda */
@@ -301,18 +366,71 @@ footer {
 }
 
 /* Estilos para tabelas */
+.table {
+    color: var(--text-on-light);
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+.table th {
+    font-weight: 600;
+    background-color: rgba(90, 110, 49, 0.1); /* Leve toque de cor militar nos cabeçalhos */
+}
+
+.table-dark th, .table-dark td {
+    color: var(--text-on-dark);
+}
+
 .table-hover tbody tr:hover {
-    background-color: rgba(13, 110, 253, 0.1);
+    background-color: rgba(90, 110, 49, 0.1);
+}
+
+/* Melhorar visibilidade de bordas */
+.table-bordered {
+    border-color: var(--military-olive);
 }
 
 /* Animação para alertas */
 .alert {
     animation: fadeIn 0.5s;
+    font-weight: 500;
+    border-width: 1px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* Garantir contraste em alertas */
+.alert-success {
+    color: #0f5132;
+    background-color: #d1e7dd;
+    border-color: #badbcc;
+}
+
+.alert-danger {
+    color: #842029;
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+}
+
+.alert-warning {
+    color: #664d03;
+    background-color: #fff3cd;
+    border-color: #ffecb5;
+}
+
+.alert-info {
+    color: #055160;
+    background-color: #cff4fc;
+    border-color: #b6effb;
+}
+
+/* Estilo para textos de mensagens de validação */
+.invalid-feedback {
+    color: #842029;
+    font-weight: 500;
 }
 
 /* Estilos para PDV */
