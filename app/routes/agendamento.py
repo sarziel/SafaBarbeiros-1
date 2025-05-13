@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
 from app import db
 from app.models import Agendamento, PerfilBarbeiro, Servico
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from sqlalchemy import and_, or_
 
 agendamento_bp = Blueprint('agendamento', __name__, url_prefix='/agendamento')

@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from app import db
 from app.models import User, PerfilBarbeiro, Agendamento, Servico, Venda, ItemVenda
 from app.forms import ServicoForm, PerfilBarbeiroForm
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from sqlalchemy import and_, func
 
 barbeiro_bp = Blueprint('barbeiro', __name__, url_prefix='/barbeiro')
