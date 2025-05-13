@@ -64,16 +64,29 @@ def horarios_disponiveis():
         fim = datetime.combine(data, a.hora_fim)
         horarios_ocupados.append((inicio, fim))
     
+    # Ajustar hora_inicio e hora_fim para os valores padrão
+    hora_inicio = time(5, 0)  # Início às 5h
+    hora_fim = time(20, 0)    # Término às 20h
+    
     # Gerar horários disponíveis em intervalos de 30 minutos
     horarios_disponiveis = []
     tempo_atual = datetime.combine(data, hora_inicio)
     tempo_limite = datetime.combine(data, hora_fim)
     
+    # Para verificar se o horário já passou
+    hora_atual = datetime.now().time() if data == datetime.now().date() else time(0, 0)
+    
     while tempo_atual < tempo_limite:
+        # Calcular o fim do agendamento baseado na duração do serviço
         tempo_fim = tempo_atual + timedelta(minutes=duracao)
         
         # Verificar se o horário está dentro do horário de trabalho
         if tempo_fim.time() <= hora_fim:
+            # Verificar se o horário já passou (apenas para hoje)
+            if tempo_atual.time() <= hora_atual and data == datetime.now().date():
+                tempo_atual += timedelta(minutes=30)
+                continue
+                
             # Verificar se o horário não conflita com agendamentos existentes
             disponivel = True
             for inicio, fim in horarios_ocupados:
@@ -86,6 +99,7 @@ def horarios_disponiveis():
             if disponivel:
                 horarios_disponiveis.append(tempo_atual.strftime('%H:%M'))
         
+        # Sempre avançar em intervalos de 30 minutos
         tempo_atual += timedelta(minutes=30)
     
     return jsonify({'horarios': horarios_disponiveis})

@@ -114,6 +114,46 @@
     
     <div class="col-md-6">
         <div class="card h-100">
+            <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-clock me-2"></i>Horários Disponíveis Hoje</h5>
+                <span id="data-disponibilidade">{{ hoje.strftime('%d/%m/%Y') }}</span>
+            </div>
+            <div class="card-body">
+                <div class="horarios-grid">
+                    {% for horario, status in horarios_disponiveis.items() %}
+                        <div class="horario-item 
+                            {% if status == 'ocupado' %}horario-ocupado
+                            {% elif status == 'disponivel' %}horario-disponivel
+                            {% elif status == 'passado' %}horario-passado{% endif %}"
+                            data-horario="{{ horario }}">
+                            {{ horario }}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="legenda-horarios mt-3">
+                    <div class="d-flex flex-wrap justify-content-center gap-3">
+                        <div class="d-flex align-items-center">
+                            <div class="legenda-item horario-disponivel me-2"></div>
+                            <small>Disponível</small>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="legenda-item horario-ocupado me-2"></div>
+                            <small>Agendado</small>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="legenda-item horario-passado me-2"></div>
+                            <small>Horário passado</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card h-100">
             <div class="card-header bg-secondary text-white">
                 <h5 class="mb-0"><i class="bi bi-calendar-week me-2"></i>Próximos Agendamentos</h5>
             </div>

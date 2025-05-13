@@ -21,8 +21,12 @@ def dashboard():
         flash('Perfil de barbeiro não encontrado. Entre em contato com o administrador.', 'warning')
         return redirect(url_for('auth.logout'))
     
+    # Obter data e hora atual
+    now = datetime.now()
+    hoje = now.date()
+    hora_atual = now.time()
+    
     # Obter agendamentos do dia
-    hoje = datetime.now().date()
     agendamentos_hoje = Agendamento.query.filter(
         Agendamento.barbeiro_id == current_user.id,
         Agendamento.data == hoje,
@@ -37,6 +41,47 @@ def dashboard():
         Agendamento.data <= proxima_semana,
         Agendamento.status != 'cancelado'
     ).order_by(Agendamento.data, Agendamento.hora_inicio).all()
+    
+    # Gerar horários disponíveis em intervalos de 30 minutos (das 5h às 20h)
+    horarios_disponiveis = {}
+    
+    # Início às 5h e término às 20h
+    hora_inicio = time(5, 0)
+    hora_fim = time(20, 0)
+    
+    # Lista de agendamentos hoje para verificar disponibilidade
+    agendamentos_hoje_dict = {}
+    for agendamento in agendamentos_hoje:
+        inicio = agendamento.hora_inicio
+        fim = agendamento.hora_fim
+        
+        # Marcar todos os horários de 30 min no intervalo do agendamento como ocupados
+        current = datetime.combine(hoje, inicio)
+        end = datetime.combine(hoje, fim)
+        
+        while current < end:
+            slot = current.time().strftime('%H:%M')
+            agendamentos_hoje_dict[slot] = agendamento
+            current += timedelta(minutes=30)
+    
+    # Gerar todos os slots de 30 minutos entre hora_inicio e hora_fim
+    current_time = datetime.combine(hoje, hora_inicio)
+    end_time = datetime.combine(hoje, hora_fim)
+    
+    while current_time < end_time:
+        slot = current_time.time().strftime('%H:%M')
+        
+        # Verificar se o horário já passou
+        if current_time.time() < hora_atual:
+            horarios_disponiveis[slot] = 'passado'
+        # Verificar se o horário está ocupado
+        elif slot in agendamentos_hoje_dict:
+            horarios_disponiveis[slot] = 'ocupado'
+        # Caso contrário, o horário está disponível
+        else:
+            horarios_disponiveis[slot] = 'disponivel'
+            
+        current_time += timedelta(minutes=30)
     
     # Obter estatísticas
     # Receita do dia
@@ -69,9 +114,11 @@ def dashboard():
                            perfil=perfil,
                            agendamentos_hoje=agendamentos_hoje,
                            proximos_agendamentos=proximos_agendamentos,
+                           horarios_disponiveis=horarios_disponiveis,
                            receita_hoje=receita_hoje,
                            receita_semana=receita_semana,
                            clientes_hoje=clientes_hoje,
+                           hoje=hoje,
                            title='Dashboard do Barbeiro')
 
 @barbeiro_bp.route('/agenda')

@@ -40,8 +40,8 @@ class RegistroClienteForm(FlaskForm):
 class RegistroBarbeiroForm(RegistroClienteForm):
     especialidade = StringField('Especialidade', validators=[Optional(), Length(max=100)])
     bio = TextAreaField('Sobre mim', validators=[Optional(), Length(max=500)])
-    horario_inicio = TimeField('Horário de Início', validators=[DataRequired()], default=time(9, 0))
-    horario_fim = TimeField('Horário de Término', validators=[DataRequired()], default=time(18, 0))
+    horario_inicio = TimeField('Horário de Início', validators=[DataRequired()], default=time(5, 0))
+    horario_fim = TimeField('Horário de Término', validators=[DataRequired()], default=time(20, 0))
     
     def validate_horario_inicio(self, horario_inicio):
         if horario_inicio.data >= self.horario_fim.data:
