@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Painel de Administração</h1>
+    
+    <!-- Cards de estatísticas -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card border-primary h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Total de Usuários</h5>
+                    <p class="display-4">{{ total_usuarios }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-success h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Barbeiros</h5>
+                    <p class="display-4">{{ total_barbeiros }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-info h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Clientes</h5>
+                    <p class="display-4">{{ total_clientes }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-warning h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Agendamentos</h5>
+                    <p class="display-4">{{ total_agendamentos }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Menu de navegação rápida -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Administração do Sistema</h5>
+                    <div class="row">
+                        <div class="col-md-3 mb-2">
+                            <a href="{{ url_for('admin.usuarios') }}" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-people me-2"></i>Gerenciar Usuários
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <a href="{{ url_for('admin.barbeiros') }}" class="btn btn-outline-success w-100">
+                                <i class="bi bi-scissors me-2"></i>Gerenciar Barbeiros
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <a href="{{ url_for('admin.relatorios') }}" class="btn btn-outline-info w-100">
+                                <i class="bi bi-bar-chart me-2"></i>Relatórios
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary w-100">
+                                <i class="bi bi-house me-2"></i>Página Inicial
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Últimos usuários cadastrados -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Últimos Usuários Cadastrados</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>E-mail</th>
+                                    <th>Tipo</th>
+                                    <th>Data</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for usuario in ultimos_usuarios %}
+                                <tr>
+                                    <td>{{ usuario.nome }}</td>
+                                    <td>{{ usuario.email }}</td>
+                                    <td>
+                                        {% if usuario.is_admin() %}
+                                            <span class="badge bg-danger">Admin</span>
+                                        {% elif usuario.is_barbeiro() %}
+                                            <span class="badge bg-success">Barbeiro</span>
+                                        {% else %}
+                                            <span class="badge bg-info">Cliente</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ usuario.created_at.strftime('%d/%m/%Y') }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center">Nenhum usuário cadastrado.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer text-end">
+                    <a href="{{ url_for('admin.usuarios') }}" class="btn btn-sm btn-primary">Ver Todos</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Últimos agendamentos -->
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Últimos Agendamentos</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Barbeiro</th>
+                                    <th>Data</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for agendamento in ultimos_agendamentos %}
+                                <tr>
+                                    <td>{{ agendamento.cliente.nome }}</td>
+                                    <td>{{ agendamento.barbeiro.nome }}</td>
+                                    <td>{{ agendamento.data.strftime('%d/%m/%Y') }} {{ agendamento.hora_inicio.strftime('%H:%M') }}</td>
+                                    <td>
+                                        {% if agendamento.status == 'agendado' %}
+                                            <span class="badge bg-primary">Agendado</span>
+                                        {% elif agendamento.status == 'concluido' %}
+                                            <span class="badge bg-success">Concluído</span>
+                                        {% elif agendamento.status == 'cancelado' %}
+                                            <span class="badge bg-danger">Cancelado</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center">Nenhum agendamento registrado.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer text-end">
+                    <a href="#" class="btn btn-sm btn-primary">Ver Todos</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

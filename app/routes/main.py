@@ -7,7 +7,9 @@ main_bp = Blueprint('main', __name__)
 def index():
     """Página inicial do site"""
     if current_user.is_authenticated:
-        if current_user.is_barbeiro():
+        if current_user.is_admin():
+            return redirect(url_for('admin.dashboard'))
+        elif current_user.is_barbeiro():
             return redirect(url_for('barbeiro.dashboard'))
         else:
             return redirect(url_for('cliente.dashboard'))

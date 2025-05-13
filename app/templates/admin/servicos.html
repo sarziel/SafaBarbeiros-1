@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Gerenciar Serviços dos Barbeiros</h1>
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Voltar ao Dashboard
+        </a>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Todos os Serviços</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Barbeiro</th>
+                            <th>Serviço</th>
+                            <th>Descrição</th>
+                            <th>Preço</th>
+                            <th>Duração</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for servico in servicos %}
+                        <tr>
+                            <td>{{ servico.barbeiro.user.nome }}</td>
+                            <td>{{ servico.nome }}</td>
+                            <td>{{ servico.descricao or "-" }}</td>
+                            <td>R$ {{ servico.preco }}</td>
+                            <td>{{ servico.duracao }} min</td>
+                            <td>
+                                {% if servico.ativo %}
+                                <span class="badge bg-success">Ativo</span>
+                                {% else %}
+                                <span class="badge bg-danger">Inativo</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('admin.editar_servico', servico_id=servico.id) }}" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modal-delete-{{ servico.id }}">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                
+                                <!-- Modal de confirmação de exclusão -->
+                                <div class="modal fade" id="modal-delete-{{ servico.id }}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalLabel">Confirmar Exclusão</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Tem certeza que deseja excluir o serviço <strong>{{ servico.nome }}</strong>?
+                                                <p class="text-danger mt-2">Esta ação não pode ser desfeita.</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <a href="{{ url_for('admin.excluir_servico', servico_id=servico.id) }}" class="btn btn-danger">Excluir</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center">Nenhum serviço cadastrado.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Filtros por barbeiro -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Filtrar por Barbeiro</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% for barbeiro in barbeiros %}
+                <div class="col-md-3 mb-3">
+                    <a href="{{ url_for('admin.servicos_barbeiro', barbeiro_id=barbeiro.id) }}" class="btn btn-outline-primary w-100">
+                        {{ barbeiro.user.nome }}
+                    </a>
+                </div>
+                {% else %}
+                <div class="col-12">
+                    <p class="text-center">Nenhum barbeiro cadastrado.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
