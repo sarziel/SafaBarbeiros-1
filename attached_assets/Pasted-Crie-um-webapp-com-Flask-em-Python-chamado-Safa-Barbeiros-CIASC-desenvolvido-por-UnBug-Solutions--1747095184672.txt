@@ -1,0 +1,74 @@
+Crie um webapp com Flask em Python chamado "Safa Barbeiros CIASC", desenvolvido por UnBug Solutions TI, com as seguintes funcionalidades:
+
+🧑‍💼 Funcionalidades de Login:
+
+    Login e cadastro para dois tipos de usuários: barbeiro e cliente
+
+    Autenticação segura com Flask-Login e hashing de senha (Werkzeug)
+
+📆 Agendamentos:
+
+    Clientes podem visualizar barbeiros cadastrados e horários disponíveis
+
+    Sistema de agendamento de horário com escolha do barbeiro e horário
+
+    Evita sobreposição de horários automaticamente
+
+📊 Dashboards:
+
+    Dashboard do cliente: lista de barbeiros cadastrados, histórico de agendamentos e status
+
+    Dashboard do barbeiro: agenda do dia, agendamentos futuros, sistema PDV, relatórios financeiros por período, receita por serviço, e estatísticas de atendimento
+
+💰 Sistema PDV (barbeiro):
+
+    Cada barbeiro tem seu próprio painel de vendas
+
+    Registra serviços prestados, valores e forma de pagamento
+
+    Histórico de caixa individual com relatórios por dia/semana/mês
+
+🗃️ Banco de Dados:
+Use PostgreSQL com a URL:
+postgresql://${{PGUSER}}:${{POSTGRES_PASSWORD}}@${{RAILWAY_TCP_PROXY_DOMAIN}}:${{RAILWAY_TCP_PROXY_PORT}}/${{PGDATABASE}}
+
+📱 Interface:
+
+    Responsiva (Flask + Jinja2 + Bootstrap 5)
+
+    Idioma padrão: Português (Brasil)
+
+    Layout limpo com foco em usabilidade para dispositivos móveis
+
+🔐 Extras recomendados:
+
+    Flask-Migrate para versionamento do banco
+
+    Flask-WTF para formulários seguros
+
+    Blueprints para organização por módulo (clientes, barbeiros, agendamentos, PDV)
+
+    Gráficos na dashboard usando Chart.js
+
+📦 Estrutura sugerida de pastas:
+.
+├── app/
+│ ├── init.py
+│ ├── models.py
+│ ├── routes/
+│ │ ├── auth.py
+│ │ ├── cliente.py
+│ │ ├── barbeiro.py
+│ │ ├── agendamento.py
+│ │ └── financeiro.py
+│ ├── templates/
+│ └── static/
+├── config.py
+├── run.py
+└── requirements.txt
+
+✨ Bonus:
+
+    Permitir upload de foto do barbeiro
+
+    Notificações por e-mail ou WhatsApp com agendamento confirmado (opcional com Twilio/SMTP)
