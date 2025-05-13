@@ -1,0 +1,534 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="bi bi-graph-up me-2"></i>Relatórios Financeiros</h4>
+            </div>
+            <div class="card-body">
+                <!-- Seleção de Período -->
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <form method="get" action="{{ url_for('barbeiro.relatorios') }}" class="row g-3">
+                                    <div class="col-md-auto">
+                                        <label for="periodo" class="form-label">Período</label>
+                                        <select class="form-select" id="periodo" name="periodo" onchange="toggleCustomDates(this.value)">
+                                            <option value="dia" {% if periodo == 'dia' %}selected{% endif %}>Hoje</option>
+                                            <option value="semana" {% if periodo == 'semana' %}selected{% endif %}>Esta Semana</option>
+                                            <option value="mes" {% if periodo == 'mes' %}selected{% endif %}>Este Mês</option>
+                                            <option value="customizado" {% if periodo == 'customizado' %}selected{% endif %}>Personalizado</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="col-md-auto custom-dates" {% if periodo != 'customizado' %}style="display: none;"{% endif %}>
+                                        <label for="data_inicio" class="form-label">Data Inicial</label>
+                                        <input type="date" class="form-control" id="data_inicio" name="data_inicio" value="{{ data_inicio.strftime('%Y-%m-%d') if data_inicio else '' }}">
+                                    </div>
+                                    
+                                    <div class="col-md-auto custom-dates" {% if periodo != 'customizado' %}style="display: none;"{% endif %}>
+                                        <label for="data_fim" class="form-label">Data Final</label>
+                                        <input type="date" class="form-control" id="data_fim" name="data_fim" value="{{ data_fim.strftime('%Y-%m-%d') if data_fim else '' }}">
+                                    </div>
+                                    
+                                    <div class="col-md-auto align-self-end">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-search me-1"></i> Filtrar
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Resumo Financeiro -->
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header bg-dark text-white">
+                                <h5 class="mb-0">Resumo do Período: {{ titulo_periodo }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card bg-primary text-white h-100">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <h5 class="card-title">Receita Total</h5>
+                                                        <h3 class="display-6">R$ {{ "%.2f"|format(total_vendas) }}</h3>
+                                                    </div>
+                                                    <i class="bi bi-currency-dollar display-4"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card bg-success text-white h-100">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <h5 class="card-title">Total de Vendas</h5>
+                                                        <h3 class="display-6">{{ vendas|length }}</h3>
+                                                    </div>
+                                                    <i class="bi bi-bag-check display-4"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card bg-info text-white h-100">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <h5 class="card-title">Ticket Médio</h5>
+                                                        <h3 class="display-6">R$ {{ "%.2f"|format(total_vendas / vendas|length) if vendas|length > 0 else "0.00" }}</h3>
+                                                    </div>
+                                                    <i class="bi bi-receipt display-4"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gráficos -->
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="bi bi-pie-chart me-2"></i>Vendas por Forma de Pagamento</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="pagamentosChart" width="400" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="bi bi-bar-chart me-2"></i>Receita por Serviço</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="servicosChart" width="400" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if periodo != 'dia' and vendas_por_dia|length > 0 %}
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Receita Diária</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="vendasDiariasChart" width="800" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Lista de Vendas -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="bi bi-list-ul me-2"></i>Vendas do Período</h5>
+                            </div>
+                            <div class="card-body">
+                                {% if vendas %}
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Data</th>
+                                                    <th>Hora</th>
+                                                    <th>Valor</th>
+                                                    <th>Forma de Pagamento</th>
+                                                    <th>Ações</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for venda in vendas %}
+                                                    <tr>
+                                                        <td>{{ venda.data.strftime('%d/%m/%Y') }}</td>
+                                                        <td>{{ venda.created_at.strftime('%H:%M') }}</td>
+                                                        <td>R$ {{ "%.2f"|format(venda.valor_total) }}</td>
+                                                        <td>
+                                                            {% if venda.forma_pagamento == 'dinheiro' %}
+                                                                <span class="badge bg-success">Dinheiro</span>
+                                                            {% elif venda.forma_pagamento == 'cartão_credito' %}
+                                                                <span class="badge bg-primary">Cartão de Crédito</span>
+                                                            {% elif venda.forma_pagamento == 'cartão_debito' %}
+                                                                <span class="badge bg-info">Cartão de Débito</span>
+                                                            {% elif venda.forma_pagamento == 'pix' %}
+                                                                <span class="badge bg-warning text-dark">PIX</span>
+                                                            {% else %}
+                                                                <span class="badge bg-secondary">{{ venda.forma_pagamento }}</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-sm btn-outline-primary ver-detalhes-venda" 
+                                                                    data-venda-id="{{ venda.id }}">
+                                                                <i class="bi bi-eye me-1"></i> Detalhes
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                {% else %}
+                                    <div class="text-center py-4">
+                                        <i class="bi bi-inbox display-4 text-muted mb-3"></i>
+                                        <p class="lead">Nenhuma venda encontrada no período selecionado.</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Detalhes da Venda -->
+<div class="modal fade" id="detalheVendaModal" tabindex="-1" aria-labelledby="detalheVendaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detalheVendaModalLabel">Detalhes da Venda</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="detalhes-venda-conteudo">
+                    <div class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Carregando...</span>
+                        </div>
+                        <p>Carregando detalhes...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Função para alternar campos de data personalizados
+function toggleCustomDates(value) {
+    const customDateFields = document.querySelectorAll('.custom-dates');
+    
+    if (value === 'customizado') {
+        customDateFields.forEach(field => field.style.display = 'block');
+    } else {
+        customDateFields.forEach(field => field.style.display = 'none');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar gráficos
+    
+    // Gráfico de vendas por forma de pagamento
+    const pagamentosCtx = document.getElementById('pagamentosChart').getContext('2d');
+    
+    // Preparar dados para o gráfico
+    const formasPagamento = [
+        {% for forma, total in formas_pagamento %}
+            '{{ forma }}',
+        {% endfor %}
+    ];
+    
+    const valoresPagamento = [
+        {% for forma, total in formas_pagamento %}
+            {{ total }},
+        {% endfor %}
+    ];
+    
+    // Mapeamento para nomes amigáveis
+    const labelsFormasPagamento = formasPagamento.map(forma => {
+        switch(forma) {
+            case 'dinheiro': return 'Dinheiro';
+            case 'cartão_credito': return 'Cartão de Crédito';
+            case 'cartão_debito': return 'Cartão de Débito';
+            case 'pix': return 'PIX';
+            default: return forma;
+        }
+    });
+    
+    // Cores para o gráfico
+    const coresPagamento = [
+        'rgba(40, 167, 69, 0.7)',  // verde para dinheiro
+        'rgba(0, 123, 255, 0.7)',  // azul para cartão crédito
+        'rgba(23, 162, 184, 0.7)', // ciano para cartão débito
+        'rgba(255, 193, 7, 0.7)',  // amarelo para pix
+        'rgba(108, 117, 125, 0.7)' // cinza para outros
+    ];
+    
+    const pagamentosChart = new Chart(pagamentosCtx, {
+        type: 'pie',
+        data: {
+            labels: labelsFormasPagamento,
+            datasets: [{
+                data: valoresPagamento,
+                backgroundColor: coresPagamento,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'right',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.raw;
+                            const total = context.dataset.data.reduce((acc, val) => acc + val, 0);
+                            const percentage = Math.round((value / total) * 100);
+                            return `R$ ${value.toFixed(2)} (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    // Gráfico de vendas por serviço
+    const servicosCtx = document.getElementById('servicosChart').getContext('2d');
+    
+    // Preparar dados para o gráfico
+    const nomesServicos = [
+        {% for servico, total in vendas_por_servico %}
+            '{{ servico }}',
+        {% endfor %}
+    ];
+    
+    const valoresServicos = [
+        {% for servico, total in vendas_por_servico %}
+            {{ total }},
+        {% endfor %}
+    ];
+    
+    const servicosChart = new Chart(servicosCtx, {
+        type: 'bar',
+        data: {
+            labels: nomesServicos,
+            datasets: [{
+                label: 'Receita (R$)',
+                data: valoresServicos,
+                backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                borderColor: 'rgba(0, 123, 255, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return 'R$ ' + value.toFixed(2);
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return 'R$ ' + context.raw.toFixed(2);
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    // Gráfico de vendas diárias (se aplicável)
+    {% if periodo != 'dia' and vendas_por_dia|length > 0 %}
+        const vendasDiariasCtx = document.getElementById('vendasDiariasChart').getContext('2d');
+        
+        // Preparar dados para o gráfico
+        const diasVendas = [
+            {% for dia, total in vendas_por_dia %}
+                '{{ dia.strftime("%d/%m") }}',
+            {% endfor %}
+        ];
+        
+        const valoresVendasDiarias = [
+            {% for dia, total in vendas_por_dia %}
+                {{ total }},
+            {% endfor %}
+        ];
+        
+        const vendasDiariasChart = new Chart(vendasDiariasCtx, {
+            type: 'line',
+            data: {
+                labels: diasVendas,
+                datasets: [{
+                    label: 'Receita Diária (R$)',
+                    data: valoresVendasDiarias,
+                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'R$ ' + value.toFixed(2);
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'R$ ' + context.raw.toFixed(2);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    {% endif %}
+    
+    // Ouvir cliques nos botões de detalhes da venda
+    document.querySelectorAll('.ver-detalhes-venda').forEach(button => {
+        button.addEventListener('click', function() {
+            const vendaId = this.getAttribute('data-venda-id');
+            const detalhesConteudo = document.getElementById('detalhes-venda-conteudo');
+            
+            // Mostrar loading
+            detalhesConteudo.innerHTML = `
+                <div class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Carregando...</span>
+                    </div>
+                    <p>Carregando detalhes...</p>
+                </div>
+            `;
+            
+            // Abrir modal
+            const modal = new bootstrap.Modal(document.getElementById('detalheVendaModal'));
+            modal.show();
+            
+            // Buscar detalhes da venda
+            fetch(`/financeiro/detalhes-venda/${vendaId}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Formatar forma de pagamento
+                    let formaPagamento = data.venda.forma_pagamento;
+                    switch(formaPagamento) {
+                        case 'dinheiro': formaPagamento = 'Dinheiro'; break;
+                        case 'cartão_credito': formaPagamento = 'Cartão de Crédito'; break;
+                        case 'cartão_debito': formaPagamento = 'Cartão de Débito'; break;
+                        case 'pix': formaPagamento = 'PIX'; break;
+                    }
+                    
+                    // Construir detalhes HTML
+                    let itensHTML = '';
+                    data.itens.forEach(item => {
+                        itensHTML += `
+                            <tr>
+                                <td>${item.servico}</td>
+                                <td>${item.quantidade}</td>
+                                <td>R$ ${item.preco_unitario.toFixed(2)}</td>
+                                <td>R$ ${item.desconto.toFixed(2)}</td>
+                                <td>R$ ${item.valor_total.toFixed(2)}</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    // Atualizar conteúdo do modal
+                    detalhesConteudo.innerHTML = `
+                        <div class="card mb-3">
+                            <div class="card-header bg-primary text-white">
+                                <h6 class="mb-0">Informações da Venda</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>Data:</strong> ${data.venda.data}</p>
+                                        <p><strong>Hora:</strong> ${data.venda.hora}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Forma de Pagamento:</strong> ${formaPagamento}</p>
+                                        <p><strong>Valor Total:</strong> R$ ${data.venda.valor_total.toFixed(2)}</p>
+                                    </div>
+                                </div>
+                                ${data.venda.observacoes ? `<p><strong>Observações:</strong> ${data.venda.observacoes}</p>` : ''}
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h6 class="mb-0">Itens da Venda</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Serviço</th>
+                                                <th>Quantidade</th>
+                                                <th>Preço Unit.</th>
+                                                <th>Desconto</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${itensHTML}
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="4" class="text-end">Total:</th>
+                                                <th>R$ ${data.venda.valor_total.toFixed(2)}</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                })
+                .catch(error => {
+                    detalhesConteudo.innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            Erro ao carregar detalhes da venda. Por favor, tente novamente.
+                        </div>
+                    `;
+                    console.error('Erro ao buscar detalhes da venda:', error);
+                });
+        });
+    });
+});
+</script>
+{% endblock %}

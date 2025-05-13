@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="bi bi-calendar-check me-2"></i>Meus Agendamentos</h4>
+                <a href="{{ url_for('cliente.agendar') }}" class="btn btn-light btn-sm">
+                    <i class="bi bi-calendar-plus me-1"></i> Novo Agendamento
+                </a>
+            </div>
+            <div class="card-body">
+                {% if agendamentos %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Horário</th>
+                                    <th>Barbeiro</th>
+                                    <th>Serviço</th>
+                                    <th>Valor</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for agendamento in agendamentos %}
+                                    <tr>
+                                        <td>{{ agendamento.data.strftime('%d/%m/%Y') }}</td>
+                                        <td>{{ agendamento.hora_inicio.strftime('%H:%M') }} - {{ agendamento.hora_fim.strftime('%H:%M') }}</td>
+                                        <td>{{ agendamento.barbeiro.nome }}</td>
+                                        <td>{{ agendamento.servico.nome }}</td>
+                                        <td>R$ {{ agendamento.servico.preco }}</td>
+                                        <td>
+                                            {% if agendamento.status == 'agendado' %}
+                                                <span class="badge bg-info">Agendado</span>
+                                            {% elif agendamento.status == 'concluído' %}
+                                                <span class="badge bg-success">Concluído</span>
+                                            {% elif agendamento.status == 'cancelado' %}
+                                                <span class="badge bg-danger">Cancelado</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if agendamento.status == 'agendado' and agendamento.data >= today %}
+                                                <button type="button" class="btn btn-sm btn-danger" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#cancelModal{{ agendamento.id }}">
+                                                    <i class="bi bi-x-circle me-1"></i> Cancelar
+                                                </button>
+                                                
+                                                <!-- Modal de Cancelamento -->
+                                                <div class="modal fade" id="cancelModal{{ agendamento.id }}" tabindex="-1" 
+                                                     aria-labelledby="cancelModalLabel{{ agendamento.id }}" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="cancelModalLabel{{ agendamento.id }}">
+                                                                    Confirmar Cancelamento
+                                                                </h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <p>Você tem certeza que deseja cancelar este agendamento?</p>
+                                                                <p><strong>Data:</strong> {{ agendamento.data.strftime('%d/%m/%Y') }}</p>
+                                                                <p><strong>Horário:</strong> {{ agendamento.hora_inicio.strftime('%H:%M') }}</p>
+                                                                <p><strong>Barbeiro:</strong> {{ agendamento.barbeiro.nome }}</p>
+                                                                <p><strong>Serviço:</strong> {{ agendamento.servico.nome }}</p>
+                                                                <div class="alert alert-warning">
+                                                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                                                    Não é possível cancelar agendamentos com menos de 24 horas de antecedência.
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                                                <form action="{{ url_for('cliente.cancelar_agendamento', agendamento_id=agendamento.id) }}" method="POST">
+                                                                    <button type="submit" class="btn btn-danger">Confirmar Cancelamento</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-calendar-x display-4 text-muted mb-3"></i>
+                        <p class="lead">Você não tem agendamentos.</p>
+                        <a href="{{ url_for('cliente.agendar') }}" class="btn btn-primary mt-2">
+                            <i class="bi bi-calendar-plus me-1"></i> Agendar Horário
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Adicionar a data de hoje para checagem nos templates
+    document.addEventListener('DOMContentLoaded', function() {
+        window.today = new Date();
+    });
+</script>
+{% endblock %}

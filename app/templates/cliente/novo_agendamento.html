@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-calendar-plus me-2"></i>Agendar Horário</h4>
+            </div>
+            <div class="card-body">
+                <form id="agendamentoForm" method="POST" action="{{ url_for('cliente.agendar') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.barbeiro_id.label(class="form-label") }}
+                        {% if form.barbeiro_id.errors %}
+                            {{ form.barbeiro_id(class="form-select is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.barbeiro_id.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.barbeiro_id(class="form-select") }}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3" id="servicosDiv" style="{% if not form.servico_id.choices %}display: none;{% endif %}">
+                        {{ form.servico_id.label(class="form-label") }}
+                        {% if form.servico_id.errors %}
+                            {{ form.servico_id(class="form-select is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.servico_id.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.servico_id(class="form-select") }}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form.data.label(class="form-label") }}
+                            {% if form.data.errors %}
+                                {{ form.data(class="form-control is-invalid", type="date") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.data.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.data(class="form-control", type="date") }}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6" id="horariosDiv" style="{% if not form.barbeiro_id.data or not form.servico_id.data or not form.data.data %}display: none;{% endif %}">
+                            {{ form.hora.label(class="form-label") }}
+                            {% if form.hora.errors %}
+                                {{ form.hora(class="form-select is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.hora.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <select name="hora" id="hora" class="form-select">
+                                    <option value="">Selecione um horário</option>
+                                </select>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.observacoes.label(class="form-label") }}
+                        {% if form.observacoes.errors %}
+                            {{ form.observacoes(class="form-control is-invalid", rows=3) }}
+                            <div class="invalid-feedback">
+                                {% for error in form.observacoes.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.observacoes(class="form-control", rows=3, placeholder="Informações adicionais sobre o agendamento") }}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary" id="btnSubmit">Agendar</button>
+                        <a href="{{ url_for('cliente.dashboard') }}" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const barbeiroSelect = document.getElementById('barbeiro_id');
+    const servicoSelect = document.getElementById('servico_id');
+    const dataInput = document.getElementById('data');
+    const horaSelect = document.getElementById('hora');
+    const servicosDiv = document.getElementById('servicosDiv');
+    const horariosDiv = document.getElementById('horariosDiv');
+    
+    // Setar data mínima para hoje
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const formattedDate = yyyy + '-' + mm + '-' + dd;
+    dataInput.min = formattedDate;
+    
+    // Setar data máxima para 30 dias depois
+    const maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + 30);
+    const maxYyyy = maxDate.getFullYear();
+    const maxMm = String(maxDate.getMonth() + 1).padStart(2, '0');
+    const maxDd = String(maxDate.getDate()).padStart(2, '0');
+    const formattedMaxDate = maxYyyy + '-' + maxMm + '-' + maxDd;
+    dataInput.max = formattedMaxDate;
+    
+    // Quando o barbeiro for selecionado
+    barbeiroSelect.addEventListener('change', function() {
+        if (this.value) {
+            // Buscar serviços do barbeiro
+            fetch(`/agendamento/servicos-barbeiro/${this.value}`)
+                .then(response => response.json())
+                .then(data => {
+                    servicoSelect.innerHTML = '<option value="">Selecione um serviço</option>';
+                    
+                    if (data.servicos && data.servicos.length > 0) {
+                        data.servicos.forEach(servico => {
+                            const option = document.createElement('option');
+                            option.value = servico.id;
+                            option.textContent = `${servico.nome} - R$ ${servico.preco.toFixed(2)}`;
+                            servicoSelect.appendChild(option);
+                        });
+                        servicosDiv.style.display = 'block';
+                    } else {
+                        servicosDiv.style.display = 'none';
+                    }
+                    
+                    // Limpar horários
+                    horaSelect.innerHTML = '<option value="">Selecione um horário</option>';
+                    horariosDiv.style.display = 'none';
+                })
+                .catch(error => console.error('Erro ao buscar serviços:', error));
+        } else {
+            servicosDiv.style.display = 'none';
+            horariosDiv.style.display = 'none';
+        }
+    });
+    
+    // Quando o serviço ou a data for alterada
+    [servicoSelect, dataInput].forEach(elem => {
+        elem.addEventListener('change', function() {
+            const barbeiro = barbeiroSelect.value;
+            const servico = servicoSelect.value;
+            const data = dataInput.value;
+            
+            if (barbeiro && servico && data) {
+                // Buscar horários disponíveis
+                fetch(`/agendamento/horarios-disponiveis?barbeiro_id=${barbeiro}&servico_id=${servico}&data=${data}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        horaSelect.innerHTML = '<option value="">Selecione um horário</option>';
+                        
+                        if (data.horarios && data.horarios.length > 0) {
+                            data.horarios.forEach(horario => {
+                                const option = document.createElement('option');
+                                option.value = horario;
+                                option.textContent = horario;
+                                horaSelect.appendChild(option);
+                            });
+                            horariosDiv.style.display = 'block';
+                        } else {
+                            horaSelect.innerHTML = '<option value="">Sem horários disponíveis</option>';
+                            horariosDiv.style.display = 'block';
+                        }
+                    })
+                    .catch(error => console.error('Erro ao buscar horários:', error));
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

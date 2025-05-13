@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-{% if is_edit %}pencil{% else %}plus-circle{% endif %} me-2"></i>
+                    {% if is_edit %}Editar{% else %}Novo{% endif %} Serviço
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('barbeiro.editar_servico', servico_id=servico.id) if is_edit else url_for('barbeiro.novo_servico') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.nome.label(class="form-label") }}
+                        {% if form.nome.errors %}
+                            {{ form.nome(class="form-control is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.nome.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.nome(class="form-control", placeholder="Ex: Corte de Cabelo Masculino") }}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.descricao.label(class="form-label") }}
+                        {% if form.descricao.errors %}
+                            {{ form.descricao(class="form-control is-invalid", rows=3) }}
+                            <div class="invalid-feedback">
+                                {% for error in form.descricao.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.descricao(class="form-control", rows=3, placeholder="Descrição detalhada do serviço") }}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form.preco.label(class="form-label") }}
+                            {% if form.preco.errors %}
+                                <div class="input-group is-invalid">
+                                    <span class="input-group-text">R$</span>
+                                    {{ form.preco(class="form-control is-invalid", placeholder="0.00") }}
+                                </div>
+                                <div class="invalid-feedback">
+                                    {% for error in form.preco.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="input-group">
+                                    <span class="input-group-text">R$</span>
+                                    {{ form.preco(class="form-control", placeholder="0.00") }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.duracao.label(class="form-label") }}
+                            {% if form.duracao.errors %}
+                                <div class="input-group is-invalid">
+                                    {{ form.duracao(class="form-control is-invalid", placeholder="30") }}
+                                    <span class="input-group-text">minutos</span>
+                                </div>
+                                <div class="invalid-feedback">
+                                    {% for error in form.duracao.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="input-group">
+                                    {{ form.duracao(class="form-control", placeholder="30") }}
+                                    <span class="input-group-text">minutos</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save me-1"></i> {% if is_edit %}Atualizar{% else %}Salvar{% endif %} Serviço
+                        </button>
+                        <a href="{{ url_for('barbeiro.servicos') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i> Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="bi bi-calendar-week me-2"></i>Agenda</h4>
+                <div>
+                    <a href="{{ url_for('barbeiro.pdv') }}" class="btn btn-light btn-sm">
+                        <i class="bi bi-cash-register me-1"></i> Ir para PDV
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <label for="data-agenda" class="input-group-text">Selecionar Data</label>
+                            <input type="date" id="data-agenda" class="form-control" value="{{ data_selecionada.strftime('%Y-%m-%d') }}" onchange="mudarData(this.value)">
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-outline-primary" onclick="navegarData(-1)">
+                                <i class="bi bi-arrow-left"></i> Anterior
+                            </button>
+                            <button type="button" class="btn btn-outline-primary" onclick="irParaHoje()">
+                                Hoje
+                            </button>
+                            <button type="button" class="btn btn-outline-primary" onclick="navegarData(1)">
+                                Próximo <i class="bi bi-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <h5 class="mb-3">{{ data_selecionada.strftime('%d/%m/%Y') }}</h5>
+                
+                <!-- Agendamentos do dia -->
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Horário</th>
+                                <th>Cliente</th>
+                                <th>Serviço</th>
+                                <th>Valor</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if agendamentos %}
+                                {% for agendamento in agendamentos %}
+                                    <tr>
+                                        <td>{{ agendamento.hora_inicio.strftime('%H:%M') }} - {{ agendamento.hora_fim.strftime('%H:%M') }}</td>
+                                        <td>{{ agendamento.cliente.nome }}</td>
+                                        <td>{{ agendamento.servico.nome }}</td>
+                                        <td>R$ {{ "%.2f"|format(agendamento.servico.preco) }}</td>
+                                        <td>
+                                            {% if agendamento.status == 'agendado' %}
+                                                <span class="badge bg-info">Agendado</span>
+                                            {% elif agendamento.status == 'concluído' %}
+                                                <span class="badge bg-success">Concluído</span>
+                                            {% elif agendamento.status == 'cancelado' %}
+                                                <span class="badge bg-danger">Cancelado</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if agendamento.status == 'agendado' %}
+                                                <div class="btn-group">
+                                                    <form action="{{ url_for('barbeiro.marcar_concluido', agendamento_id=agendamento.id) }}" method="post" class="me-2">
+                                                        <button type="submit" class="btn btn-sm btn-success">
+                                                            <i class="bi bi-check-circle me-1"></i> Concluído
+                                                        </button>
+                                                    </form>
+                                                    <a href="{{ url_for('barbeiro.pdv') }}?agendamento_id={{ agendamento.id }}" class="btn btn-sm btn-primary">
+                                                        <i class="bi bi-cash-register me-1"></i> Registrar Pagamento
+                                                    </a>
+                                                </div>
+                                            {% elif agendamento.status == 'concluído' and not agendamento.venda %}
+                                                <a href="{{ url_for('barbeiro.pdv') }}?agendamento_id={{ agendamento.id }}" class="btn btn-sm btn-primary">
+                                                    <i class="bi bi-cash-register me-1"></i> Registrar Pagamento
+                                                </a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-4">
+                                        <i class="bi bi-calendar-x display-4 text-muted d-block mb-3"></i>
+                                        <p class="lead">Nenhum agendamento para esta data.</p>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function mudarData(data) {
+    window.location.href = "{{ url_for('barbeiro.agenda') }}?data=" + data;
+}
+
+function navegarData(dias) {
+    const dataAtual = document.getElementById('data-agenda').value;
+    const data = new Date(dataAtual);
+    data.setDate(data.getDate() + dias);
+    
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const dia = String(data.getDate()).padStart(2, '0');
+    
+    mudarData(`${ano}-${mes}-${dia}`);
+}
+
+function irParaHoje() {
+    const hoje = new Date();
+    const ano = hoje.getFullYear();
+    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+    const dia = String(hoje.getDate()).padStart(2, '0');
+    
+    mudarData(`${ano}-${mes}-${dia}`);
+}
+</script>
+{% endblock %}

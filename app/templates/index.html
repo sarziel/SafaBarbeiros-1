@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="text-center my-5">
+    <h1 class="display-4 mb-4">Bem-vindo ao Safa Barbeiros CIASC</h1>
+    <p class="lead mb-5">O sistema completo para gerenciamento de barbearias.</p>
+    
+    <div class="row justify-content-center">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-circle display-4 mb-3"></i>
+                    <h3>Cliente</h3>
+                    <p class="card-text">Agende seu corte de cabelo com seu barbeiro favorito de forma fácil e rápida.</p>
+                    <a href="{{ url_for('auth.registro_cliente') }}" class="btn btn-primary mt-2">Cadastrar como Cliente</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-scissors display-4 mb-3"></i>
+                    <h3>Barbeiro</h3>
+                    <p class="card-text">Gerencie sua agenda, administre seu caixa e acompanhe seus resultados financeiros.</p>
+                    <a href="{{ url_for('auth.registro_barbeiro') }}" class="btn btn-primary mt-2">Cadastrar como Barbeiro</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-5">
+        <p>Já tem uma conta?</p>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary">Faça Login</a>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h3 class="card-title"><i class="bi bi-calendar-check me-2"></i>Agendamentos Fáceis</h3>
+                <p class="card-text">Escolha o barbeiro, selecione o serviço e reserve o melhor horário para você. Simples e rápido!</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h3 class="card-title"><i class="bi bi-cash-register me-2"></i>Sistema PDV</h3>
+                <p class="card-text">Barbeiros podem registrar vendas, controlar pagamentos e acompanhar o faturamento diário.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h3 class="card-title"><i class="bi bi-graph-up me-2"></i>Relatórios Detalhados</h3>
+                <p class="card-text">Acompanhe seu desempenho financeiro, analise tendências e tome decisões com base em dados.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,159 @@
+/* Estilos personalizados para o Safa Barbeiros CIASC */
+
+/* Cores customizadas */
+:root {
+    --barbeiro-primary: #0d6efd;     /* Azul primário */
+    --barbeiro-secondary: #6c757d;   /* Cinza secundário */
+    --barbeiro-success: #198754;     /* Verde sucesso */
+    --barbeiro-danger: #dc3545;      /* Vermelho perigo */
+    --barbeiro-warning: #ffc107;     /* Amarelo aviso */
+    --barbeiro-info: #0dcaf0;        /* Azul claro info */
+    --barbeiro-light: #f8f9fa;       /* Cinza claro */
+    --barbeiro-dark: #212529;        /* Cinza escuro */
+}
+
+/* Layout e espaçamento */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1;
+}
+
+footer {
+    margin-top: auto;
+}
+
+/* Estilizando cards */
+.card {
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    border-top-left-radius: 0.5rem !important;
+    border-top-right-radius: 0.5rem !important;
+}
+
+/* Customizando badges */
+.badge {
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+}
+
+/* Estilos para a página de dashboard */
+.dashboard-stat-card {
+    transition: transform 0.3s;
+}
+
+.dashboard-stat-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Estilizando inputs */
+.form-control:focus, .form-select:focus {
+    border-color: var(--barbeiro-primary);
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Estilos para a página de agenda */
+.agenda-day-header {
+    background-color: var(--barbeiro-dark);
+    color: white;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    margin-bottom: 1rem;
+}
+
+/* Estilos para o formulário de agendamento */
+.horario-disponivel {
+    cursor: pointer;
+    padding: 0.5rem;
+    margin: 0.25rem;
+    border-radius: 0.25rem;
+    background-color: var(--barbeiro-light);
+    transition: background-color 0.2s;
+}
+
+.horario-disponivel:hover {
+    background-color: var(--barbeiro-primary);
+    color: white;
+}
+
+.horario-selecionado {
+    background-color: var(--barbeiro-primary);
+    color: white;
+}
+
+/* Estilos para o modal de detalhes da venda */
+.detalhe-venda-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.detalhe-venda-item:last-child {
+    border-bottom: none;
+}
+
+/* Estilos para lista de barbeiros */
+.barbeiro-card {
+    transition: transform 0.3s;
+}
+
+.barbeiro-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.barbeiro-profile-pic {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid var(--barbeiro-primary);
+}
+
+/* Estilos para tabelas */
+.table-hover tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.1);
+}
+
+/* Animação para alertas */
+.alert {
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Estilos para PDV */
+.pdv-servico-card {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.pdv-servico-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .card-title {
+        font-size: 1.25rem;
+    }
+    
+    .display-4 {
+        font-size: 2.5rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+}

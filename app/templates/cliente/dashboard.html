@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title mb-4">
+                    <i class="bi bi-house-door me-2"></i>Bem-vindo, {{ current_user.nome.split()[0] }}!
+                </h2>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('cliente.agendar') }}" class="btn btn-primary btn-lg">
+                                <i class="bi bi-calendar-plus me-2"></i>Agendar Novo Horário
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('cliente.agendamentos') }}" class="btn btn-outline-primary btn-lg">
+                                <i class="bi bi-calendar-check me-2"></i>Ver Todos os Agendamentos
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-calendar-week me-2"></i>Próximos Agendamentos</h5>
+            </div>
+            <div class="card-body">
+                {% if agendamentos_futuros %}
+                    <div class="list-group">
+                        {% for agendamento in agendamentos_futuros %}
+                            <div class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{ agendamento.servico.nome }}</h5>
+                                    <small class="text-muted">{{ agendamento.data.strftime('%d/%m/%Y') }}</small>
+                                </div>
+                                <p class="mb-1">
+                                    <i class="bi bi-clock me-1"></i> {{ agendamento.hora_inicio.strftime('%H:%M') }} - {{ agendamento.hora_fim.strftime('%H:%M') }}
+                                </p>
+                                <p class="mb-1">
+                                    <i class="bi bi-person me-1"></i> Barbeiro: <strong>{{ agendamento.barbeiro.nome }}</strong>
+                                </p>
+                                {% if agendamento.status == 'agendado' %}
+                                    <span class="badge bg-info">Agendado</span>
+                                {% elif agendamento.status == 'concluído' %}
+                                    <span class="badge bg-success">Concluído</span>
+                                {% elif agendamento.status == 'cancelado' %}
+                                    <span class="badge bg-danger">Cancelado</span>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-calendar-x display-4 text-muted mb-3"></i>
+                        <p class="lead">Você não tem agendamentos futuros.</p>
+                        <a href="{{ url_for('cliente.agendar') }}" class="btn btn-primary">
+                            <i class="bi bi-calendar-plus me-1"></i> Agendar Horário
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0"><i class="bi bi-calendar-check me-2"></i>Histórico de Agendamentos</h5>
+            </div>
+            <div class="card-body">
+                {% if agendamentos_passados %}
+                    <div class="list-group">
+                        {% for agendamento in agendamentos_passados %}
+                            <div class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{ agendamento.servico.nome }}</h5>
+                                    <small class="text-muted">{{ agendamento.data.strftime('%d/%m/%Y') }}</small>
+                                </div>
+                                <p class="mb-1">
+                                    <i class="bi bi-clock me-1"></i> {{ agendamento.hora_inicio.strftime('%H:%M') }} - {{ agendamento.hora_fim.strftime('%H:%M') }}
+                                </p>
+                                <p class="mb-1">
+                                    <i class="bi bi-person me-1"></i> Barbeiro: <strong>{{ agendamento.barbeiro.nome }}</strong>
+                                </p>
+                                {% if agendamento.status == 'agendado' %}
+                                    <span class="badge bg-info">Agendado</span>
+                                {% elif agendamento.status == 'concluído' %}
+                                    <span class="badge bg-success">Concluído</span>
+                                {% elif agendamento.status == 'cancelado' %}
+                                    <span class="badge bg-danger">Cancelado</span>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-clock-history display-4 text-muted mb-3"></i>
+                        <p class="lead">Sem histórico de agendamentos.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0"><i class="bi bi-people me-2"></i>Nossos Barbeiros</h5>
+            </div>
+            <div class="card-body">
+                {% if barbeiros %}
+                    <div class="row">
+                        {% for barbeiro in barbeiros %}
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        {% if barbeiro.perfil_barbeiro and barbeiro.perfil_barbeiro.foto_url %}
+                                            <img src="{{ barbeiro.perfil_barbeiro.foto_url }}" alt="{{ barbeiro.nome }}" class="img-fluid rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+                                        {% else %}
+                                            <i class="bi bi-person-circle display-4 mb-3"></i>
+                                        {% endif %}
+                                        <h5 class="card-title">{{ barbeiro.nome }}</h5>
+                                        {% if barbeiro.perfil_barbeiro %}
+                                            <p class="card-text text-muted">{{ barbeiro.perfil_barbeiro.especialidade }}</p>
+                                            <p class="card-text">{{ barbeiro.perfil_barbeiro.bio[:100] + '...' if barbeiro.perfil_barbeiro.bio and barbeiro.perfil_barbeiro.bio|length > 100 else barbeiro.perfil_barbeiro.bio|default('') }}</p>
+                                        {% endif %}
+                                        <a href="{{ url_for('cliente.agendar', barbeiro_id=barbeiro.id) }}" class="btn btn-primary">
+                                            <i class="bi bi-calendar-plus me-1"></i> Agendar
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-search display-4 text-muted mb-3"></i>
+                        <p class="lead">Nenhum barbeiro encontrado.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

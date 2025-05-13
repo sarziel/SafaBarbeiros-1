@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-person-circle me-2"></i>Meu Perfil</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('barbeiro.perfil') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Nome</label>
+                                <input type="text" class="form-control" value="{{ current_user.nome }}" disabled>
+                                <div class="form-text">Para alterar seu nome, entre em contato com a administração.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">E-mail</label>
+                                <input type="email" class="form-control" value="{{ current_user.email }}" disabled>
+                                <div class="form-text">Para alterar seu email, entre em contato com a administração.</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.telefone.label(class="form-label") }}
+                        {% if form.telefone.errors %}
+                            {{ form.telefone(class="form-control is-invalid", placeholder="(99) 99999-9999") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.telefone.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.telefone(class="form-control", placeholder="(99) 99999-9999") }}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.especialidade.label(class="form-label") }}
+                        {% if form.especialidade.errors %}
+                            {{ form.especialidade(class="form-control is-invalid", placeholder="Ex: Cortes modernos, Barba") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.especialidade.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.especialidade(class="form-control", placeholder="Ex: Cortes modernos, Barba") }}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.bio.label(class="form-label") }}
+                        {% if form.bio.errors %}
+                            {{ form.bio(class="form-control is-invalid", rows=3, placeholder="Conte um pouco sobre você e seu trabalho") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.bio.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.bio(class="form-control", rows=3, placeholder="Conte um pouco sobre você e seu trabalho") }}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form.horario_inicio.label(class="form-label") }}
+                            {% if form.horario_inicio.errors %}
+                                {{ form.horario_inicio(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.horario_inicio.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.horario_inicio(class="form-control") }}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.horario_fim.label(class="form-label") }}
+                            {% if form.horario_fim.errors %}
+                                {{ form.horario_fim(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.horario_fim.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.horario_fim(class="form-control") }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.dias_trabalho.label(class="form-label") }}
+                        {% if form.dias_trabalho.errors %}
+                            <div class="is-invalid">
+                                {% for option in form.dias_trabalho %}
+                                    <div class="form-check form-check-inline">
+                                        {{ option(class="form-check-input") }}
+                                        {{ option.label(class="form-check-label") }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.dias_trabalho.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {% for option in form.dias_trabalho %}
+                                <div class="form-check form-check-inline">
+                                    {{ option(class="form-check-input") }}
+                                    {{ option.label(class="form-check-label") }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.duracao_padrao.label(class="form-label") }}
+                        {% if form.duracao_padrao.errors %}
+                            <div class="input-group is-invalid">
+                                {{ form.duracao_padrao(class="form-control is-invalid") }}
+                                <span class="input-group-text">minutos</span>
+                            </div>
+                            <div class="invalid-feedback">
+                                {% for error in form.duracao_padrao.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="input-group">
+                                {{ form.duracao_padrao(class="form-control") }}
+                                <span class="input-group-text">minutos</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save me-1"></i> Salvar Alterações
+                        </button>
+                        <a href="{{ url_for('barbeiro.dashboard') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i> Voltar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

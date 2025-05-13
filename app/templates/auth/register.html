@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="bi {% if user_type == 'cliente' %}bi-person-plus{% else %}bi-scissors{% endif %} me-2"></i>
+                    Cadastro de {{ 'Cliente' if user_type == 'cliente' else 'Barbeiro' }}
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('auth.registro_cliente' if user_type == 'cliente' else 'auth.registro_barbeiro') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form.nome.label(class="form-label") }}
+                            {% if form.nome.errors %}
+                                {{ form.nome(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.nome.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.nome(class="form-control", placeholder="Seu nome completo") }}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.email.label(class="form-label") }}
+                            {% if form.email.errors %}
+                                {{ form.email(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.email.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.email(class="form-control", placeholder="seu-email@exemplo.com") }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form.telefone.label(class="form-label") }}
+                            {% if form.telefone.errors %}
+                                {{ form.telefone(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.telefone.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.telefone(class="form-control", placeholder="(99) 99999-9999") }}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <!-- Este espaço fica vazio para o formulário de cliente -->
+                            {% if user_type == 'barbeiro' %}
+                                {{ form.especialidade.label(class="form-label") }}
+                                {% if form.especialidade.errors %}
+                                    {{ form.especialidade(class="form-control is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.especialidade.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.especialidade(class="form-control", placeholder="Ex: Cortes modernos, Barba") }}
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if user_type == 'barbeiro' %}
+                        <div class="mb-3">
+                            {{ form.bio.label(class="form-label") }}
+                            {% if form.bio.errors %}
+                                {{ form.bio(class="form-control is-invalid", rows=3) }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.bio.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.bio(class="form-control", rows=3, placeholder="Uma breve descrição sobre você e seu trabalho") }}
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                {{ form.horario_inicio.label(class="form-label") }}
+                                {% if form.horario_inicio.errors %}
+                                    {{ form.horario_inicio(class="form-control is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.horario_inicio.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.horario_inicio(class="form-control") }}
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.horario_fim.label(class="form-label") }}
+                                {% if form.horario_fim.errors %}
+                                    {{ form.horario_fim(class="form-control is-invalid") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.horario_fim.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.horario_fim(class="form-control") }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.dias_trabalho.label(class="form-label") }}
+                            {% if form.dias_trabalho.errors %}
+                                <div class="is-invalid">
+                                    {% for option in form.dias_trabalho %}
+                                        <div class="form-check form-check-inline">
+                                            {{ option(class="form-check-input") }}
+                                            {{ option.label(class="form-check-label") }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.dias_trabalho.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {% for option in form.dias_trabalho %}
+                                    <div class="form-check form-check-inline">
+                                        {{ option(class="form-check-input") }}
+                                        {{ option.label(class="form-check-label") }}
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form.password.label(class="form-label") }}
+                            {% if form.password.errors %}
+                                {{ form.password(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.password.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.password(class="form-control") }}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.confirm_password.label(class="form-label") }}
+                            {% if form.confirm_password.errors %}
+                                {{ form.confirm_password(class="form-control is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.confirm_password.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.confirm_password(class="form-control") }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Cadastrar</button>
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary">Já tem uma conta? Faça Login</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
