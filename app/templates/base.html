@@ -24,9 +24,9 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark mb-4" style="background-color: var(--military-dark-green);">
+    <nav class="navbar navbar-expand-lg navbar-light mb-4" style="background-color: var(--military-light); box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('auth.login') }}" style="color: var(--military-sand); font-weight: bold;">
+            <a class="navbar-brand" href="{{ url_for('auth.login') }}" style="color: var(--military-dark-green); font-weight: bold;">
                 <i class="bi bi-scissors me-2"></i>Safa Barbeiros CIASC
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
@@ -155,9 +155,9 @@
         {% block content %}{% endblock %}
     </div>
 
-    <footer class="footer mt-auto py-3 text-light" style="background-color: var(--military-dark-green);">
+    <footer class="footer mt-auto py-3" style="background-color: var(--military-light); border-top: 1px solid rgba(0,0,0,0.1);">
         <div class="container text-center">
-            <span style="color: var(--military-sand);">&copy; 2023 Safa Barbeiros CIASC - Desenvolvido por UnBug Solutions TI</span>
+            <span style="color: var(--military-dark-green);">&copy; 2023 Safa Barbeiros CIASC - Desenvolvido por UnBug Solutions TI</span>
         </div>
     </footer>
 

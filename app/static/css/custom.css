@@ -1,21 +1,28 @@
 /* Estilos personalizados para o Safa Barbeiros CIASC */
 
-/* Cores customizadas - Baseadas no camuflado dos Fuzileiros Navais do Brasil */
+/* Cores customizadas - Baseadas no camuflado dos Fuzileiros Navais do Brasil (versão clara) */
 :root {
+    /* Cores escuras originais */
     --military-dark-green: #2D3A1B;    /* Verde escuro militar */
     --military-olive: #5A6E31;         /* Verde oliva militar */
     --military-brown: #5E4229;         /* Marrom terroso */
     --military-tan: #A08047;           /* Bege/caqui */
-    --military-sand: #DCCFA0;          /* Areia claro - cor ajustada para melhor contraste */
+    --military-sand: #DCCFA0;          /* Areia claro */
     
-    /* Cores do sistema adaptadas para o tema militar */
+    /* Cores claras para o tema light */
+    --military-light: #F0F5E6;         /* Verde claro */
+    --military-light-olive: #E6EDD9;   /* Verde oliva claro */
+    --military-light-brown: #F0E8DB;   /* Marrom claro */
+    --military-light-tan: #F5F1E6;     /* Bege claro */
+    
+    /* Cores do sistema adaptadas para o tema militar (modo claro) */
     --barbeiro-primary: var(--military-olive);       /* Verde oliva como cor primária */
     --barbeiro-secondary: var(--military-brown);     /* Marrom como cor secundária */
-    --barbeiro-success: #4D6B2E;                     /* Verde mais escuro para sucesso - ajustado */
-    --barbeiro-danger: #A04236;                      /* Vermelho terroso para perigo - ajustado */
-    --barbeiro-warning: var(--military-sand);        /* Areia para avisos */
-    --barbeiro-info: #5D86A2;                        /* Azul naval escuro para info - ajustado */
-    --barbeiro-light: #E8E4D5;                       /* Bege claro para fundos */
+    --barbeiro-success: #4D6B2E;                     /* Verde mais escuro para sucesso */
+    --barbeiro-danger: #A04236;                      /* Vermelho terroso para perigo */
+    --barbeiro-warning: var(--military-tan);         /* Tan para avisos */
+    --barbeiro-info: #5D86A2;                        /* Azul naval escuro para info */
+    --barbeiro-light: var(--military-light);         /* Verde claro para fundos */
     --barbeiro-dark: var(--military-dark-green);     /* Verde escuro para elementos escuros */
     
     /* Cores de texto para contraste otimizado */

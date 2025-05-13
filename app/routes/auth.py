@@ -82,14 +82,14 @@ def registro_barbeiro():
         db.session.add(user)
         db.session.commit()
         
-        # Criar perfil de barbeiro
+        # Criar perfil de barbeiro - todos os dias disponíveis por padrão
         perfil = PerfilBarbeiro(
             user_id=user.id,
             especialidade=form.especialidade.data,
             bio=form.bio.data,
             horario_inicio=form.horario_inicio.data,
             horario_fim=form.horario_fim.data,
-            dias_trabalho=','.join(map(str, form.dias_trabalho.data))
+            dias_trabalho='1,2,3,4,5,6,7'  # Todos os dias disponíveis por padrão
         )
         
         db.session.add(perfil)
