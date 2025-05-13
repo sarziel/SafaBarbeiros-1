@@ -6,17 +6,21 @@
     --military-olive: #5A6E31;         /* Verde oliva militar */
     --military-brown: #5E4229;         /* Marrom terroso */
     --military-tan: #A08047;           /* Bege/caqui */
-    --military-sand: #CAB279;          /* Areia claro */
+    --military-sand: #DCCFA0;          /* Areia claro - cor ajustada para melhor contraste */
     
     /* Cores do sistema adaptadas para o tema militar */
     --barbeiro-primary: var(--military-olive);       /* Verde oliva como cor primária */
     --barbeiro-secondary: var(--military-brown);     /* Marrom como cor secundária */
-    --barbeiro-success: #3E5922;                     /* Verde mais escuro para sucesso */
-    --barbeiro-danger: #8B3A30;                      /* Vermelho terroso para perigo */
+    --barbeiro-success: #4D6B2E;                     /* Verde mais escuro para sucesso - ajustado */
+    --barbeiro-danger: #A04236;                      /* Vermelho terroso para perigo - ajustado */
     --barbeiro-warning: var(--military-sand);        /* Areia para avisos */
-    --barbeiro-info: #4D7693;                        /* Azul naval escuro para info */
+    --barbeiro-info: #5D86A2;                        /* Azul naval escuro para info - ajustado */
     --barbeiro-light: #E8E4D5;                       /* Bege claro para fundos */
     --barbeiro-dark: var(--military-dark-green);     /* Verde escuro para elementos escuros */
+    
+    /* Cores de texto para contraste otimizado */
+    --text-on-dark: #FFFFFF;                         /* Texto branco sobre fundos escuros */
+    --text-on-light: #2D3A1B;                        /* Texto verde escuro sobre fundos claros */
 }
 
 /* Layout e espaçamento */
@@ -124,7 +128,8 @@ footer {
 }
 
 .dropdown-item {
-    color: var(--military-sand);
+    color: var(--text-on-dark);
+    font-weight: 500; /* Melhorar visibilidade */
 }
 
 .dropdown-item:hover, .dropdown-item:focus {
@@ -194,7 +199,8 @@ footer {
 
 .badge.bg-warning {
     background-color: var(--military-sand) !important;
-    color: var(--military-dark-green);
+    color: var(--text-on-light); /* Melhor contraste */
+    font-weight: 600; /* Tornar o texto mais visível */
 }
 
 .badge.bg-info {
@@ -204,11 +210,11 @@ footer {
 /* Botões estilo militar com textura sutíl */
 .btn-military {
     background-color: var(--military-dark-green);
-    color: var(--military-sand);
+    color: var(--text-on-dark); /* Melhor contraste */
     border: 1px solid var(--military-olive);
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
     text-shadow: 0 1px 1px rgba(0,0,0,0.2);
-    font-weight: 500;
+    font-weight: 600; /* Mais visível */
 }
 
 .btn-military:hover {
@@ -247,17 +253,23 @@ footer {
     margin: 0.25rem;
     border-radius: 0.25rem;
     background-color: var(--barbeiro-light);
-    transition: background-color 0.2s;
+    color: var(--text-on-light); /* Melhor contraste */
+    border: 1px solid rgba(0,0,0,0.1); /* Borda mais visível */
+    transition: all 0.2s;
+    font-weight: 500;
 }
 
 .horario-disponivel:hover {
     background-color: var(--barbeiro-primary);
-    color: white;
+    color: var(--text-on-dark);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .horario-selecionado {
     background-color: var(--barbeiro-primary);
-    color: white;
+    color: var(--text-on-dark);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    font-weight: 600;
 }
 
 /* Estilos para o modal de detalhes da venda */
