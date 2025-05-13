@@ -1,15 +1,22 @@
 /* Estilos personalizados para o Safa Barbeiros CIASC */
 
-/* Cores customizadas */
+/* Cores customizadas - Baseadas no camuflado dos Fuzileiros Navais do Brasil */
 :root {
-    --barbeiro-primary: #0d6efd;     /* Azul primário */
-    --barbeiro-secondary: #6c757d;   /* Cinza secundário */
-    --barbeiro-success: #198754;     /* Verde sucesso */
-    --barbeiro-danger: #dc3545;      /* Vermelho perigo */
-    --barbeiro-warning: #ffc107;     /* Amarelo aviso */
-    --barbeiro-info: #0dcaf0;        /* Azul claro info */
-    --barbeiro-light: #f8f9fa;       /* Cinza claro */
-    --barbeiro-dark: #212529;        /* Cinza escuro */
+    --military-dark-green: #2D3A1B;    /* Verde escuro militar */
+    --military-olive: #5A6E31;         /* Verde oliva militar */
+    --military-brown: #5E4229;         /* Marrom terroso */
+    --military-tan: #A08047;           /* Bege/caqui */
+    --military-sand: #CAB279;          /* Areia claro */
+    
+    /* Cores do sistema adaptadas para o tema militar */
+    --barbeiro-primary: var(--military-olive);       /* Verde oliva como cor primária */
+    --barbeiro-secondary: var(--military-brown);     /* Marrom como cor secundária */
+    --barbeiro-success: #3E5922;                     /* Verde mais escuro para sucesso */
+    --barbeiro-danger: #8B3A30;                      /* Vermelho terroso para perigo */
+    --barbeiro-warning: var(--military-sand);        /* Areia para avisos */
+    --barbeiro-info: #4D7693;                        /* Azul naval escuro para info */
+    --barbeiro-light: #E8E4D5;                       /* Bege claro para fundos */
+    --barbeiro-dark: var(--military-dark-green);     /* Verde escuro para elementos escuros */
 }
 
 /* Layout e espaçamento */
@@ -17,6 +24,7 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    background-color: #f5f3ed; /* Fundo levemente bege */
 }
 
 .container {
@@ -25,24 +33,187 @@ body {
 
 footer {
     margin-top: auto;
+    background-color: var(--military-dark-green) !important;
+    color: var(--military-sand) !important;
 }
 
-/* Estilizando cards */
+/* Sobrescrevendo cores do Bootstrap para tema Fuzileiros Navais */
+.bg-primary {
+    background-color: var(--military-olive) !important;
+}
+
+.bg-secondary {
+    background-color: var(--military-brown) !important;
+}
+
+.bg-success {
+    background-color: var(--barbeiro-success) !important;
+}
+
+.bg-danger {
+    background-color: var(--barbeiro-danger) !important;
+}
+
+.bg-warning {
+    background-color: var(--military-sand) !important;
+}
+
+.bg-info {
+    background-color: var(--barbeiro-info) !important;
+}
+
+.bg-dark {
+    background-color: var(--military-dark-green) !important;
+}
+
+.btn-primary {
+    background-color: var(--military-olive);
+    border-color: var(--military-olive);
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+    background-color: #4A5C28;
+    border-color: #4A5C28;
+}
+
+.btn-secondary {
+    background-color: var(--military-brown);
+    border-color: var(--military-brown);
+}
+
+.btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active {
+    background-color: #4D3522;
+    border-color: #4D3522;
+}
+
+.btn-outline-primary {
+    color: var(--military-olive);
+    border-color: var(--military-olive);
+}
+
+.btn-outline-primary:hover, .btn-outline-primary:focus {
+    background-color: var(--military-olive);
+    border-color: var(--military-olive);
+}
+
+.btn-outline-secondary {
+    color: var(--military-brown);
+    border-color: var(--military-brown);
+}
+
+.btn-outline-secondary:hover, .btn-outline-secondary:focus {
+    background-color: var(--military-brown);
+    border-color: var(--military-brown);
+}
+
+.text-primary {
+    color: var(--military-olive) !important;
+}
+
+.border-primary {
+    border-color: var(--military-olive) !important;
+}
+
+.navbar-dark {
+    background-color: var(--military-dark-green) !important;
+}
+
+.dropdown-menu {
+    background-color: var(--military-dark-green);
+    border-color: var(--military-olive);
+}
+
+.dropdown-item {
+    color: var(--military-sand);
+}
+
+.dropdown-item:hover, .dropdown-item:focus {
+    background-color: var(--military-olive);
+    color: #fff;
+}
+
+/* Estilizando cards - Tema Militar */
 .card {
-    border-radius: 0.5rem;
+    border-radius: 0.25rem;
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
     margin-bottom: 1.5rem;
+    border: 1px solid var(--military-olive);
+    background-color: rgba(245, 243, 237, 0.8);
 }
 
 .card-header {
-    border-top-left-radius: 0.5rem !important;
-    border-top-right-radius: 0.5rem !important;
+    border-top-left-radius: 0.25rem !important;
+    border-top-right-radius: 0.25rem !important;
 }
 
-/* Customizando badges */
+/* Cards com bordas estilo militar */
+.card-military {
+    border-left: 4px solid var(--military-olive);
+}
+
+/* Cartões temáticos */
+.card-camo {
+    background-image: linear-gradient(45deg, 
+        var(--military-dark-green) 25%, 
+        var(--military-olive) 25%, 
+        var(--military-olive) 50%, 
+        var(--military-dark-green) 50%, 
+        var(--military-dark-green) 75%, 
+        var(--military-olive) 75%);
+    background-size: 10px 10px;
+    border: none;
+}
+
+.card-camo .card-body {
+    background-color: rgba(245, 243, 237, 0.9);
+    border-radius: 0.25rem;
+}
+
+/* Customizando badges - Estilo Militar */
 .badge {
     font-weight: 500;
     padding: 0.35em 0.65em;
+    border-radius: 0.2rem;
+}
+
+.badge.bg-primary {
+    background-color: var(--military-olive) !important;
+}
+
+.badge.bg-secondary {
+    background-color: var(--military-brown) !important;
+}
+
+.badge.bg-success {
+    background-color: var(--barbeiro-success) !important;
+}
+
+.badge.bg-danger {
+    background-color: var(--barbeiro-danger) !important;
+}
+
+.badge.bg-warning {
+    background-color: var(--military-sand) !important;
+    color: var(--military-dark-green);
+}
+
+.badge.bg-info {
+    background-color: var(--barbeiro-info) !important;
+}
+
+/* Botões estilo militar com textura sutíl */
+.btn-military {
+    background-color: var(--military-dark-green);
+    color: var(--military-sand);
+    border: 1px solid var(--military-olive);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+    text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+    font-weight: 500;
+}
+
+.btn-military:hover {
+    background-color: var(--military-olive);
+    color: white;
 }
 
 /* Estilos para a página de dashboard */
